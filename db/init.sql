@@ -10,3 +10,6 @@ CREATE TABLE found_items
     photo_path TEXT,
     description_embedding vector(1024) NOT NULL
 );
+
+CREATE INDEX idx_station_date
+ON found_items (found_station, found_date);
