@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+psycopg[binary]
+pgvector
+sentence-transformers
+torch
+transformers
+numpy
+scikit-learn

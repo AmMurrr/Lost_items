@@ -1,0 +1,7 @@
+.env
+.venv/
+.mypy_cache/
+models/
+.ruff_cache/
+generate_embeddings.py
+__pycache__/
