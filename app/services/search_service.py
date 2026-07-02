@@ -4,7 +4,6 @@ from typing import Any
 import psycopg
 from pgvector import Vector
 
-from app.services.db import get_connection
 from app.services.embedding import build_embedding
 
 
@@ -16,6 +15,7 @@ def search_found_items(
     description: str,
     station: str,
     loss_date: date,
+    conn: psycopg.Connection,
     limit: int = 5,
 ) -> list[dict[str, Any]]:
     embedding = Vector(build_embedding(description))
@@ -39,20 +39,19 @@ def search_found_items(
     """
 
     try:
-        with get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    query,
-                    (
-                        embedding,
-                        station,
-                        date_from,
-                        date_to,
-                        limit,
-                    ),
-                )
+        with conn.cursor() as cur:
+            cur.execute(
+                query,
+                (
+                    embedding,
+                    station,
+                    date_from,
+                    date_to,
+                    limit,
+                ),
+            )
 
-                rows = cur.fetchall()
+            rows = cur.fetchall()
     except psycopg.Error as exc:
         raise SearchDatabaseError("Search query failed") from exc
 

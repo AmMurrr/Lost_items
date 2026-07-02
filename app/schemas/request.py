@@ -15,3 +15,12 @@ class SearchResult(BaseModel):
     station: str
     found_date: date
     similarity: float
+
+
+class ItemResponse(BaseModel):
+    id: int
+    description: str
+    station: str
+    found_date: date
+    found_place: str
+    image_path: str | None
