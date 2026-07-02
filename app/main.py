@@ -1,17 +1,22 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from app.routers.health import router as health_router
-from app.routers.search import router as search_router
 from app.routers.items import router as items_router
+from app.routers.search import router as search_router
 from app.services.embedding import load_model
-from contextlib import asynccontextmanager
+from logs.logs import logger
 
 
 # lifespan
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Запуск приложения: загружаю модель эмбеддингов")
     load_model()
+    logger.info("Модель эмбеддингов загружена успешно")
     yield
+    logger.info("Остановка приложения")
 
 
 app = FastAPI(title="Lost Items API", version="0.1", lifespan=lifespan)
