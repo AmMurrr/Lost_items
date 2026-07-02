@@ -9,3 +9,5 @@ torch
 transformers
 numpy
 scikit-learn
+python-telegram-bot
+httpx
