@@ -8,7 +8,7 @@ from telegram.ext import (
     ContextTypes,
     ConversationHandler,
     MessageHandler,
-    filters
+    filters,
 )
 
 from bot.api import ApiClientError, ApiNotFoundError, get_item, search_items
@@ -42,9 +42,7 @@ async def search_start(
 ) -> int:
     context.user_data.clear()
 
-    await update.message.reply_text(
-        "Введите дату потери в формате YYYY-MM-DD."
-    )
+    await update.message.reply_text("Введите дату потери в формате YYYY-MM-DD.")
     return LOSS_DATE
 
 
@@ -181,9 +179,7 @@ def get_search_conversation_handler() -> ConversationHandler:
             LOSS_DATE: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, receive_loss_date)
             ],
-            STATION: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, receive_station)
-            ],
+            STATION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_station)],
             DESCRIPTION: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, receive_description)
             ],
@@ -200,11 +196,10 @@ def _format_search_results(results: list[dict]) -> str:
     lines = ["Найдены похожие вещи:\n"]
 
     for index, item in enumerate(results, start=1):
-        lines.append(
-            f"{index}. {_short_description(item['description'])} \n"
-        )
+        lines.append(f"{index}. {_short_description(item['description'])} \n")
 
     return "\n".join(lines)
+
 
 # Короткая версия описания для списка, только первую вещь
 def _short_description(description: str) -> str:

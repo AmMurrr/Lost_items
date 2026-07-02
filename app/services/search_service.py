@@ -53,7 +53,7 @@ def search_found_items(
 
             rows = cur.fetchall()
     except psycopg.Error as exc:
-        raise SearchDatabaseError("Search query failed") from exc
+        raise SearchDatabaseError("Запрос поиска завершился ошибкой") from exc
 
     return [
         {

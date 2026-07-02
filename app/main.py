@@ -13,12 +13,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(
-    title="Lost Items API",
-    version="0.1",
-    lifespan=lifespan
-)
-
+app = FastAPI(title="Lost Items API", version="0.1", lifespan=lifespan)
 
 
 app.include_router(search_router)
@@ -28,4 +23,3 @@ app.include_router(items_router)
 @app.get("/")
 def root():
     return {"status": "ok"}
-

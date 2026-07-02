@@ -11,7 +11,7 @@ load_dotenv()
 API_URL = os.getenv("API_URL")
 
 if API_URL is None:
-    raise RuntimeError("API_URL неизвестен")
+    raise RuntimeError("Переменная окружения API_URL не найдена")
 
 
 class ApiClientError(Exception):
@@ -40,19 +40,17 @@ async def search_items(
             response = await client.post(url, json=payload)
             response.raise_for_status()
     except httpx.HTTPStatusError as exc:
-        raise ApiClientError(
-            f"API returned HTTP {exc.response.status_code}"
-        ) from exc
+        raise ApiClientError(f"API вернул HTTP-статус {exc.response.status_code}") from exc
     except httpx.HTTPError as exc:
-        raise ApiClientError("API is unavailable") from exc
+        raise ApiClientError("API временно недоступен") from exc
 
     try:
         data = response.json()
     except JSONDecodeError as exc:
-        raise ApiClientError("API returned invalid JSON") from exc
+        raise ApiClientError("API вернул некорректный JSON") from exc
 
     if not isinstance(data, list):
-        raise ApiClientError("API returned unexpected response")
+        raise ApiClientError("API вернул неожиданный ответ")
 
     return data
 
@@ -66,21 +64,18 @@ async def get_item(item_id: int) -> dict[str, Any]:
             response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         if exc.response.status_code == 404:
-            raise ApiNotFoundError("Item not found") from exc
+            raise ApiNotFoundError("Предмет не найден") from exc
 
-        raise ApiClientError(
-            f"API returned HTTP {exc.response.status_code}"
-        ) from exc
+        raise ApiClientError(f"API вернул HTTP-статус {exc.response.status_code}") from exc
     except httpx.HTTPError as exc:
-        raise ApiClientError("API is unavailable") from exc
+        raise ApiClientError("API временно недоступен") from exc
 
     try:
         data = response.json()
     except JSONDecodeError as exc:
-        raise ApiClientError("API returned invalid JSON") from exc
+        raise ApiClientError("API вернул некорректный JSON") from exc
 
     if not isinstance(data, dict):
-        raise ApiClientError("API returned unexpected response")
+        raise ApiClientError("API вернул неожиданный ответ")
 
     return data
-

@@ -18,13 +18,13 @@ def get_item(
     except ItemDatabaseError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Database item lookup is unavailable",
+            detail="Поиск карточки в базе данных временно недоступен",
         ) from exc
 
     if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item not found",
+            detail="Предмет не найден",
         )
 
     return item

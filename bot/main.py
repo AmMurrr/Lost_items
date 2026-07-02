@@ -3,14 +3,18 @@ import os
 from dotenv import load_dotenv
 from telegram.ext import Application, CommandHandler
 
-from bot.handlers import get_item_callback_handler, get_search_conversation_handler, start
+from bot.handlers import (
+    get_item_callback_handler,
+    get_search_conversation_handler,
+    start,
+)
 
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 if BOT_TOKEN is None:
-    raise RuntimeError("BOT_TOKEN неизвестен")
+    raise RuntimeError("Переменная окружения BOT_TOKEN не найдена")
 
 
 def main() -> None:

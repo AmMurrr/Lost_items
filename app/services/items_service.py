@@ -3,9 +3,8 @@ from typing import Any
 import psycopg
 
 
-
 class ItemDatabaseError(Exception):
-    """Raised when the item query cannot be completed."""
+    """Возникает, когда запрос карточки предмета не удается выполнить."""
 
 
 def get_found_item(item_id: int, conn: psycopg.Connection) -> dict[str, Any] | None:
@@ -26,7 +25,7 @@ def get_found_item(item_id: int, conn: psycopg.Connection) -> dict[str, Any] | N
             cur.execute(query, (item_id,))
             row = cur.fetchone()
     except psycopg.Error as exc:
-        raise ItemDatabaseError("Item query failed") from exc
+        raise ItemDatabaseError("Запрос карточки предмета завершился ошибкой") from exc
 
     if row is None:
         return None

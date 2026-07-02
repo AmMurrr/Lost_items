@@ -12,7 +12,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL is None:
-    raise RuntimeError("DATABASE_URL не найден в .env")
+    raise RuntimeError("Переменная окружения DATABASE_URL не найдена в файле .env")
 
 JSON_PATH = Path("data/synthetic_items.json")
 
@@ -21,13 +21,11 @@ with open(JSON_PATH, "r", encoding="utf-8") as f:
 
 print(f"Загрузил {len(items)} предметов")
 
-# Подключение к PostgreSQL
+# Подключение к PostgreSQL.
 with psycopg.connect(DATABASE_URL) as conn:
-
     register_vector(conn)
 
     with conn.cursor() as cur:
-
         insert_query = """
         INSERT INTO found_items
         (
@@ -50,7 +48,6 @@ with psycopg.connect(DATABASE_URL) as conn:
         """
 
         for item in tqdm(items):
-
             cur.execute(
                 insert_query,
                 (
