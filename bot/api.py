@@ -6,6 +6,8 @@ from typing import Any
 import httpx
 from dotenv import load_dotenv
 
+from logs.logs import logger
+
 load_dotenv()
 
 API_URL = os.getenv("API_URL")
@@ -35,13 +37,24 @@ async def search_items(
 
     url = f"{API_URL.rstrip('/')}/search"
 
+    logger.info(
+        "Отправляю запрос поиска: станция=%s, дата=%s",
+        station,
+        loss_date.isoformat(),
+    )
+
     try:
         async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as client:
             response = await client.post(url, json=payload)
             response.raise_for_status()
     except httpx.HTTPStatusError as exc:
+        logger.warning(
+            "API вернул ошибку при поиске: статус=%s",
+            exc.response.status_code,
+        )
         raise ApiClientError(f"API вернул HTTP-статус {exc.response.status_code}") from exc
     except httpx.HTTPError as exc:
+        logger.exception("Не удалось выполнить запрос поиска к API")
         raise ApiClientError("API временно недоступен") from exc
 
     try:
@@ -52,11 +65,15 @@ async def search_items(
     if not isinstance(data, list):
         raise ApiClientError("API вернул неожиданный ответ")
 
+    logger.info("Поиск завершен: найдено %d совпадений", len(data))
+
     return data
 
 
 async def get_item(item_id: int) -> dict[str, Any]:
     url = f"{API_URL.rstrip('/')}/items/{item_id}"
+
+    logger.info("Запрашиваю карточку предмета: id=%s", item_id)
 
     try:
         async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as client:
@@ -64,10 +81,17 @@ async def get_item(item_id: int) -> dict[str, Any]:
             response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         if exc.response.status_code == 404:
+            logger.info("Карточка предмета не найдена: id=%s", item_id)
             raise ApiNotFoundError("Предмет не найден") from exc
 
+        logger.warning(
+            "API вернул ошибку при получении карточки: id=%s, статус=%s",
+            item_id,
+            exc.response.status_code,
+        )
         raise ApiClientError(f"API вернул HTTP-статус {exc.response.status_code}") from exc
     except httpx.HTTPError as exc:
+        logger.exception("Не удалось получить карточку предмета из API: id=%s", item_id)
         raise ApiClientError("API временно недоступен") from exc
 
     try:
@@ -77,5 +101,7 @@ async def get_item(item_id: int) -> dict[str, Any]:
 
     if not isinstance(data, dict):
         raise ApiClientError("API вернул неожиданный ответ")
+
+    logger.info("Карточка предмета получена: id=%s", item_id)
 
     return data
