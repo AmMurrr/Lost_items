@@ -8,5 +8,5 @@ CREATE TABLE found_items
     found_place TEXT NOT NULL,
     item_description TEXT NOT NULL,
     photo_path TEXT,
-    description_embedding vector(1024)
+    description_embedding vector(1024) NOT NULL
 );
