@@ -33,11 +33,6 @@
 
 Для работы проекта используются следующие переменные:
 
-- `DB_HOST`
-- `DB_PORT`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
 - `DATABASE_URL`
 - `MODEL_PATH`
 - `API_URL`
@@ -48,11 +43,6 @@
 Пример `.env`:
 
 ```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=lost_items
-DB_USER=postgres
-DB_PASSWORD=postgres
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/lost_items
 API_URL=http://127.0.0.1:8000
 BOT_TOKEN=your_telegram_bot_token
