@@ -42,7 +42,8 @@
 - `MODEL_PATH`
 - `API_URL`
 - `BOT_TOKEN`
-- `HF_TOKEN` — нужен только для скачивания модели скриптом `scripts/download_model.py`
+- `HF_TOKEN` – нужен только для скачивания модели скриптом `scripts/download_model.py`
+- `SHOW_SIMILARITY` – Показывать ли сходство эмбеддингов
 
 Пример `.env`:
 
@@ -57,6 +58,8 @@ API_URL=http://127.0.0.1:8000
 BOT_TOKEN=your_telegram_bot_token
 MODEL_PATH=./models/bge-m3
 HF_TOKEN=your_huggingface_token
+
+SHOW_SIMILARITY=false
 ```
 
 ## Запуск
@@ -105,3 +108,21 @@ python3 -m bot.main
 - `data/` — синтетические данные.
 - `models/` — локальная модель эмбеддингов.
 - `scripts/` — утилиты для загрузки модели и заполнения БД.
+
+
+## Примеры
+
+Пример 1
+```
+ Черный городской рюкзак Nike
+```
+Дата потери: `2026-06-22`
+Станция: `Курская`
+
+Пример 2
+```
+Смартфон Realme 9
+```
+Дата потери: `2026-06-29`
+Станция: `Пушкинская`
+

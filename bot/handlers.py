@@ -1,6 +1,8 @@
+import os
 from datetime import datetime
 from pathlib import Path
 
+from dotenv import load_dotenv
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     CallbackQueryHandler,
@@ -13,6 +15,13 @@ from telegram.ext import (
 
 from bot.api import ApiClientError, ApiNotFoundError, get_item, search_items
 from logs.logs import logger
+
+load_dotenv()
+
+SHOW_SIMILARITY = os.getenv("SHOW_SIMILARITY", "false").strip().lower() in {
+    "1",
+    "true",
+}
 
 LOSS_DATE, STATION, DESCRIPTION = range(3)
 
@@ -135,7 +144,7 @@ async def receive_description(
     logger.info("Пользователю отправлены результаты поиска: %d", len(results))
 
     await update.message.reply_text(
-        _format_search_results(results),
+        _format_search_results(results, show_similarity=SHOW_SIMILARITY),
         reply_markup=_build_results_keyboard(results),
     )
 
@@ -211,11 +220,16 @@ def get_item_callback_handler() -> CallbackQueryHandler:
     return CallbackQueryHandler(show_item_details, pattern=r"^item:\d+$")
 
 
-def _format_search_results(results: list[dict]) -> str:
+def _format_search_results(results: list[dict], show_similarity: bool = False) -> str:
     lines = ["Найдены похожие вещи:\n"]
 
     for index, item in enumerate(results, start=1):
-        lines.append(f"{index}. {_short_description(item['description'])} \n")
+        lines.append(f"{index}. {_short_description(item['description'])}")
+
+        if show_similarity and item.get("similarity") is not None:
+            lines.append(f"Similarity: {float(item['similarity']):.3f}")
+
+        lines.append("")
 
     return "\n".join(lines)
 
